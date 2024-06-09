@@ -19,6 +19,9 @@ const options = {
     rejectUnauthorized: false // Adicione esta linha se estiver usando um certificado autoassinado
 };
 
+// Armazenamento de mensagens recebidas
+let messages = [];
+
 // Conectar ao broker MQTT
 const mqttClient = mqtt.connect(brokerUrl, options);
 
@@ -32,6 +35,12 @@ mqttClient.on('connect', () => {
             console.log('Inscrito no tópico');
         }
     });
+});
+
+mqttClient.on('message', (topic, message) => {
+    console.log(`Mensagem recebida do tópico ${topic}: ${message.toString()}`);
+    // Armazenar a mensagem recebida
+    messages.push({ topic, message: message.toString() });
 });
 
 mqttClient.on('error', (err) => {
